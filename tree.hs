@@ -1,8 +1,8 @@
---KYNIOCK Valerian
+--KINYOCK Valerian
 --PERNET Thibaut
 --Groupe3
 
---TP 4 Des arbres et des couleurs
+--TP4 - Des arbres et des couleurs
 
 --import Test.QuickCheck
 
