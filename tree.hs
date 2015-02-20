@@ -129,8 +129,8 @@ arc :: (a -> String) -> (a, a) -> String
 arc genString (v1, v2) = genString v1 ++ " -> " ++ genString v2
 
 --Question17
-genColor :: Show a => a -> String
-genColor c = "[color=" ++ show c ++ ", fontcolor=" ++ show c ++"]"  
+genColor :: String -> String
+genColor c = "[color=" ++ id c ++ ", fontcolor=" ++ id c ++"]"  
 
 
 
