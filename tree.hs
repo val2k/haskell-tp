@@ -139,8 +139,17 @@ dotise name fc fv a = "digraph "++ name ++ " {\n"
                       ++ unlines (map (\n -> noeud fc fv n) (aplatit a))
                       ++ unlines (map (\arcx -> arc show arcx) (arcs a))
                       ++ "}"   
+--Question18
    
+elementR x Feuille = False
+elementR x (Noeud _ v ag ad) 
+                        | x < v     = elementR x ag
+                        | x > v     = elementR x ad
+                        | otherwise = True
 
+--Question19
+data Couleur = R | N
+ 
  
 
 
