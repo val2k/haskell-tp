@@ -103,13 +103,13 @@ element el (Noeud _ v g d)
 						
 --Question14     
 printColor :: (Show a) => a -> String
-printColor c = "color: " ++ show c
+printColor c = "[color=" ++ show c ++ ", fontcolor=" ++ show c ++ "]"
 
 printVal :: (Show a) => a -> String
-printVal v = "value: " ++ show v
+printVal v = show v
 
 noeud :: (c -> String) -> (a -> String) -> (c,a) -> String 
-noeud pC pV (c, v) = (pC c) ++ (pV v) 
+noeud pC pV (c, v) = (pV v) ++ (pC c) 
 
 --Question15
 getVal (Noeud _ v _ _) = v
@@ -126,15 +126,22 @@ genString :: Show a => a -> String
 genString = show
 
 arc :: (a -> String) -> (a, a) -> String
-arc genString (v1, v2) = genString v1 ++ " -> " ++ genString v2
+arc fgs (v1, v2) = fgs v1 ++ " -> " ++ fgs v2
 
 --Question17
-genColor :: String -> String
-genColor c = "[color=" ++ id c ++ ", fontcolor=" ++ id c ++"]"  
+--genColor :: String -> String
+--genColor c = "[color=" ++ id c ++ ", fontcolor=" ++ id c ++"]"  
 
+dotise :: (Show v) => String -> (c -> String ) -> (v -> String) -> Arbre c v -> String
 
+dotise name fc fv a = "digraph "++ name ++ " {\n"
+                      ++ "node [fontname=\"DejaVu-Sans\", shape=circle]\n"
+                      ++ unlines (map (\n -> noeud fc fv n) (aplatit a))
+                      ++ unlines (map (\arcx -> arc show arcx) (arcs a))
+                      ++ "}"   
+   
 
-
+ 
 
 
 
