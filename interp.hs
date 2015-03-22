@@ -1,4 +1,5 @@
 import Parser
+import Data.Maybe
 
 type Nom = String
 
@@ -108,9 +109,46 @@ instance Show ValeurA where
     show (VFonctionA _) = "λ"
                        -- ^ ou "VFonctionA _", ou "<fun>" ou toute
                        --   autre représentation des fonctions
-    show (VLitteralA l) = show l
+    show (VLitteralA (Entier e)) = show e
+    show (VLitteralA (Bool b)) = show b
 
 type Environnement a = [(Nom, a)]
 
 --Question15
---interpreteA :: Environnement ValeurA -> Expression -> ValeurA
+interpreteA :: Environnement ValeurA -> Expression -> ValeurA
+interpreteA _ (Lit l) = VLitteralA l
+interpreteA xs (Var k) = fromJust (lookup k xs)
+
+interpreteA xs (Lam nom expr) = VFonctionA (\v -> interpreteA   ((nom,v):xs) expr)
+interpreteA xs (App e1 e2) = f v2
+                         where VFonctionA f = interpreteA xs e1
+                               v2 = interpreteA xs e2
+
+--Question16
+negA :: ValeurA
+negA = VFonctionA (\(VLitteralA (Entier e)) -> VLitteralA (Entier (- e)))
+
+--Question17
+addA :: ValeurA
+addA = VFonctionA (\(VLitteralA (Entier e1)) -> VFonctionA (\(VLitteralA (Entier e2)) ->
+                              VLitteralA (Entier (e1 + e2))))
+
+--Question18
+envA :: Environnement ValeurA
+envA = [ ("neg",   negA)
+       , ("add",   releveBinOpEntierA (+))
+       , ("soust", releveBinOpEntierA (-))
+       , ("mult",  releveBinOpEntierA (*))
+       , ("quot",  releveBinOpEntierA quot)
+       , ("if",    ifthenelseA) ]
+
+releveBinOpEntierA :: (Integer -> Integer -> Integer) -> ValeurA
+releveBinOpEntierA op = VFonctionA (\(VLitteralA (Entier e1)) -> VFonctionA (\(VLitteralA (Entier e2)) -> VLitteralA (Entier (op e1 e2))))
+
+--Question19
+checkIf :: Bool -> ValeurA -> ValeurA -> ValeurA
+checkIf True (VLitteralA (Entier e1)) _ = VLitteralA (Entier e1) :: ValeurA
+checkIf False _ (VLitteralA (Entier e2)) = VLitteralA (Entier e2) ::ValeurA
+ 
+ifthenelseA :: ValeurA
+ifthenelseA = VFonctionA (\(VLitteralA (Bool b)) -> VFonctionA (\(VLitteralA (Entier e1)) -> VFonctionA (\(VLitteralA (Entier e2)) -> (checkIf b e1 e2))))
